@@ -52,7 +52,28 @@ app.get('/users', (req, res) => {
   res.send(users);
 })
 
+app.get('/users/:id', (req, res) => {
+  // id stored in req.params.id
+  console.log('Fetch user id:' + req.params.id)
 
+  //fetch data from postgres
+  pool.connect()
+    .then(() => {
+      // Shows all users -> ('SELECT * FROM users')
+      // const sql = 'SELECT * FROM users'
+
+      // Filters users by id ->
+      const sql = 'SELECT * FROM users WHERE id = $1;'
+      const params = [req.params.id];
+      return pool.query(sql, params);
+    })
+    .then((data) => {
+  // Returns all row info    
+      res.json(data.rows)
+    })
+    console.log('did it work?')
+  // res.end()
+})
 
 
 
